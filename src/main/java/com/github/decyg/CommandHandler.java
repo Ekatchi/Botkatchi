@@ -78,6 +78,7 @@ public class CommandHandler  {
                 BotUtils.sendMessage(event.getChannel(), "Error: Must be in the same voice channel to use this command.");
         });
 /**
+ * Guess it doesn't work anymore. Oh well.
         // Plays the first song found containing the first arg. Only works in #music channels, and will not work if the person calling the command
         //is not in the same voice channel as the bot.
         commandMap.put("playsong", (event, args) -> {
