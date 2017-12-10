@@ -1,20 +1,15 @@
 package com.github.decyg;
 
-        import com.github.decyg.lavaplayer.GuildMusicManager;
-        import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-        import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-        import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-        import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-        import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-        import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-        import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
         import com.vdurmont.emoji.Emoji;
         import com.vdurmont.emoji.EmojiManager;
         import sx.blah.discord.api.IDiscordClient;
         import sx.blah.discord.api.events.EventSubscriber;
         import sx.blah.discord.handle.impl.events.*;
         import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-        import sx.blah.discord.handle.impl.events.guild.voice.user.*;
+		import sx.blah.discord.handle.impl.events.guild.member.UserBanEvent;
+		import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
+		import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
+		import sx.blah.discord.handle.impl.events.guild.voice.user.*;
         import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelJoinEvent;
         import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelLeaveEvent;
         import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelMoveEvent;
@@ -50,12 +45,8 @@ public class CommandHandler  {
 
     // A static map of commands mapping from command string to the functional impl
     private static Map<String, Command> commandMap = new HashMap<>();
-    private static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();;;
-    private static final Map<Long, GuildMusicManager> musicManagers  = new HashMap<>();;
     static {
 
-        AudioSourceManagers.registerRemoteSources(playerManager);
-        AudioSourceManagers.registerLocalSource(playerManager);
 
         // If the IUser that called this is in a voice channel, join them
         commandMap.put("joinvoice", (event, args) -> {
@@ -68,7 +59,7 @@ public class CommandHandler  {
 
         });
 
-        
+
 
         //If the user that called this is in the same voice channel, clear the playlist and leave the channel.
         commandMap.put("leavevoice", (event, args) -> {
@@ -86,7 +77,7 @@ public class CommandHandler  {
             else
                 BotUtils.sendMessage(event.getChannel(), "Error: Must be in the same voice channel to use this command.");
         });
-
+/**
         // Plays the first song found containing the first arg. Only works in #music channels, and will not work if the person calling the command
         //is not in the same voice channel as the bot.
         commandMap.put("playsong", (event, args) -> {
@@ -122,7 +113,7 @@ public class CommandHandler  {
             }
             else
                 BotUtils.sendMessage(event.getChannel(), "Error: Must be in the same voice channel to skip songs.");
-        });
+        });**/
 
         commandMap.put("echo", (event, args) -> {
             if(args.size() == 0)
@@ -739,7 +730,7 @@ public class CommandHandler  {
          RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
          });**/
     }
-
+/**
     //A bunch of stuff for the music player. Do not touch.
     private static synchronized GuildMusicManager getGuildAudioPlayer(IGuild guild) {
         long guildId = Long.parseLong(guild.getID());
@@ -791,7 +782,7 @@ public class CommandHandler  {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         musicManager.scheduler.nextTrack();
         BotUtils.sendMessage(channel, "Skipped to next track.");
-    }
+    }**/
 
     //Handles all message received events, and parses them out as needed. Can mess around with, if you know what you're doing.
     @EventSubscriber
@@ -863,6 +854,7 @@ public class CommandHandler  {
     //A bunch of user joins/leaves for servers, no need to touch.
     //When a new user joins a server, this message will be sent to the #general of that server.
     @EventSubscriber
+
     public void onJoinEvent(UserJoinEvent event) throws Exception
     {
         BotUtils.sendMessage(event.getGuild().getChannelsByName("general").get(0), "Welcome, " + event.getUser().mention() + ", to " + event.getGuild().getName() + "!");
