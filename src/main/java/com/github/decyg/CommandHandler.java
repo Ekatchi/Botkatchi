@@ -77,44 +77,6 @@ public class CommandHandler  {
             else
                 BotUtils.sendMessage(event.getChannel(), "Error: Must be in the same voice channel to use this command.");
         });
-/**
- * Guess it doesn't work anymore. Oh well.
-        // Plays the first song found containing the first arg. Only works in #music channels, and will not work if the person calling the command
-        //is not in the same voice channel as the bot.
-        commandMap.put("playsong", (event, args) -> {
-            if(!(event.getMessage().getChannel().getName().equals("music"))) {
-                BotUtils.sendMessage(event.getChannel(), "Error: Music-related commands only work in music.");
-                return;
-            }
-            IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
-            if(botVoiceChannel == null) {
-                BotUtils.sendMessage(event.getChannel(), "Error: not currently in a voice channel.");
-                return;
-            }
-            if((botVoiceChannel.getConnectedUsers().contains(event.getAuthor())))
-            {
-                // Turn the args back into a string separated by space
-                String searchStr = String.join(" ", args);
-                loadAndPlay(event.getChannel(), searchStr);
-            }
-            else
-                BotUtils.sendMessage(event.getChannel(), "Error: Must be in the same voice channel to request songs.");
-        });
-
-        // Skips the current song. Only works in a #music channel, and if the one using the command is in the same voice channel as the bot.
-        commandMap.put("skipsong", (event, args) -> {
-            if(!(event.getMessage().getChannel().getName().equals("music"))) {
-                BotUtils.sendMessage(event.getChannel(), "Error: Music-related commands only work in music.");
-                return;
-            }
-            IVoiceChannel botVoiceChannel = event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel();
-            if((botVoiceChannel.getConnectedUsers().contains(event.getAuthor())))
-            {
-                skipTrack(event.getChannel());
-            }
-            else
-                BotUtils.sendMessage(event.getChannel(), "Error: Must be in the same voice channel to skip songs.");
-        });**/
 
         commandMap.put("echo", (event, args) -> {
             if(args.size() == 0)
@@ -512,42 +474,18 @@ public class CommandHandler  {
         });
 
         //Creates a custom command in the .txt file on the desktop of this computer. If that disappears somehow, disable this immediately.
-        commandMap.put("customcommand", (event, args) -> {
-            //ï is the seperator between the username and the commandname
-            //ð is the seperator between the commandname and commandtext
-            if(args.size() < 1)
-            {
-                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcommand [commandname] [text] to add command\n-customcommand [commandname] to call a command.");
-                return;
-            }
-            File file = new File("C:\\Users\\Botkatchi\\Desktop\\customcommands.txt");
-            try(Scanner sc = new Scanner(file))
-            {
-                while(sc.hasNextLine())
-                {
-                    String line = sc.nextLine();
-                    if(line.contains(args.get(0).trim()) && args.size() == 1)
-                    {
-                        String splitline[] = line.split("ð");
-                        BotUtils.sendMessage(event.getChannel(), splitline[3].trim());
-                        return;
-                    }
-                    if(line.contains(args.get(0).trim()) && args.size() > 1)
-                    {
-                        BotUtils.sendMessage(event.getChannel(), "Error: Command already exists.");
-                        return;
-                    }
-                }
-                if(args.size() == 1)
-                {
-                    BotUtils.sendMessage(event.getChannel(), "Error: command not found.");
-                    return;
-                }
-            }
-            catch (IOException e)
-            {
-                BotUtils.sendMessage(event.getChannel(), "Error: Could not access data. Please do not try again.");
-            }
+        commandMap.put("customcommandadd", (event, args) -> {
+					//ï is the seperator between the username and the commandname
+					//ð is the seperator between the commandname and commandtext
+					if (args.size() < 1) {
+						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcommandadd [commandname] [text] to add command.");
+						return;
+					}
+					if (args.size() == 1) {
+						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcommandadd [commandname] [text] to add command. \nCustom commands are called by simply using `-[commandname]`.\n For a list of custom commands, call `-customcommmandlist`.");
+						return;
+					}
+
             File outFile = new File("C:\\Users\\Botkatchi\\Desktop\\customcommands.txt");
             try(FileWriter fWriter = new FileWriter(outFile, true))
             {
@@ -689,7 +627,7 @@ public class CommandHandler  {
         commandMap.put("help", (event, args) -> {
             EmbedBuilder builder = new EmbedBuilder();
             builder.appendField("Garbage Meme Commands: ", "thinksphere\nvaynespotting\nvaynspottingaddscore\nugu\ndonger \nhappyday \nmokoumeme \nSMorcerer \njoeyface \nomemechan \nlewd", true);
-            builder.appendField("More Relevant Commands: ", "choose\nrestart\necho\ncustomcommand\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use)\njoinvoice \nleavevoice \nmyava \ntheirava \nplaysong\nskipsong", true);
+            builder.appendField("More Relevant Commands: ", "choose\nrestart\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use)\njoinvoice \nleavevoice \nmyava \ntheirava \nplaysong\nskipsong", true);
             builder.withAuthorName("Botkatchi");
             builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
             builder.withColor(200, 0, 0);
@@ -731,59 +669,6 @@ public class CommandHandler  {
          RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
          });**/
     }
-/**
-    //A bunch of stuff for the music player. Do not touch.
-    private static synchronized GuildMusicManager getGuildAudioPlayer(IGuild guild) {
-        long guildId = Long.parseLong(guild.getID());
-        GuildMusicManager musicManager = musicManagers.get(guildId);
-        if (musicManager == null) {
-            musicManager = new GuildMusicManager(playerManager);
-            musicManagers.put(guildId, musicManager);
-        }
-        guild.getAudioManager().setAudioProvider(musicManager.getAudioProvider());
-        return musicManager;
-    }
-
-    //A bunch of stuff for the music player. Do not touch.
-    private static void loadAndPlay(final IChannel channel, final String trackUrl) {
-        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                BotUtils.sendMessage(channel, "Adding to queue " + track.getInfo().title);
-                play(musicManager, track);
-            }
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
-                if (firstTrack == null) {
-                    firstTrack = playlist.getTracks().get(0);
-                }
-                BotUtils.sendMessage(channel, "Adding to queue: " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")");
-                play(musicManager, firstTrack);
-            }
-            @Override
-            public void noMatches() {
-                BotUtils.sendMessage(channel, "Error: Usage: -playsong [YouTube or SoundCloud URL] ");
-            }
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                BotUtils.sendMessage(channel, "Error: Could not play " + exception.getMessage());
-            }
-        });
-    }
-
-    //More music player stuff. Leave it alone.
-    private static void play(GuildMusicManager musicManager, AudioTrack track) {
-        musicManager.scheduler.queue(track);
-    }
-
-    //You can look, but you better not touch.
-    private static void skipTrack(IChannel channel) {
-        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        musicManager.scheduler.nextTrack();
-        BotUtils.sendMessage(channel, "Skipped to next track.");
-    }**/
 
     //Handles all message received events, and parses them out as needed. Can mess around with, if you know what you're doing.
     @EventSubscriber
@@ -836,7 +721,8 @@ public class CommandHandler  {
                 while(sc.hasNextLine())
                 {
                     String line = sc.nextLine();
-                    if(line.substring(0, commandStr.length() - 1).equals(commandStr))
+                    String[] array = line.split("ð");
+                    if(array[2].trim().equals(commandStr))
                     {
                         String splitline[] = line.split("ð");
                         BotUtils.sendMessage(event.getChannel(), splitline[3].trim());
