@@ -38,8 +38,8 @@ public class MainRunner {
             162014083409772545 < Code_talk for clownfiesta
             318817870962229258 < bot_playground for clownfiesta
 
-
-            String channelID = diddleboard.nextLine();
+*/
+            Long channelID = Long.valueOf(diddleboard.nextLine());
             String message = diddleboard.nextLine();
             try {
                 new MessageBuilder(cli).withChannel(channelID).withContent(message).build();
@@ -49,8 +49,8 @@ public class MainRunner {
                 e.printStackTrace();
             }
 
-        }*/
-    }
+        }
+
 
     public static void updateBotPresence(IDiscordClient client)
     {
