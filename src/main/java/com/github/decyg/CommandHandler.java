@@ -631,8 +631,8 @@ public class CommandHandler  {
             builder.withAuthorName("Botkatchi");
             builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
             builder.withColor(200, 0, 0);
-            builder.withDescription("A multi-purpose Discord bot made by Ekatchi. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.");
-            builder.withFooterText("Last updated: November 22nd, 2017");
+            builder.withDescription("A multi-purpose Discord bot made by Ekatchi. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.");
+            builder.withFooterText("Last updated: December 10th, 2017");
             RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
         });
         /**
