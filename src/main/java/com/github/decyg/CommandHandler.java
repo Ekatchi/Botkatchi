@@ -684,10 +684,6 @@ public class CommandHandler  {
          {
          return;
          }**/
-        IDiscordClient thisclient = BotUtils.getBuiltDiscordClient("MjA1Mzk1MTQwNTI3NzgzOTU3.DA5F_w.7h5vrV6EpWLhAbEUZU-tB56v-to");
-        Random random = new Random();
-        String[] status = {"With 0's and 1's", "With Literal Cancer","Circle Simulator 2017", "100% Salt Juice", "League of Legends: Game of the Year Edition", "the Embodiment of Scarlet Failure", "Degenerate Dredge", "Infernities in 2017", "Tryhardt", "ＦＵＣＣ: The Game", "With Cardboard Stocks", "with the Bloodghast Brigade", "with the Amalgam-nation", "with the Nar-crew-moeba"};
-        thisclient.changePlayingText(status[random.nextInt(14)]);
         String[] argArray = event.getMessage().getContent().split(" ");
 
         System.out.println(event.getAuthor().getName() + " (in " + event.getMessage().getChannel().getName() + " at " + event.getMessage().getTimestamp() + "): " + event.getMessage().getContent());

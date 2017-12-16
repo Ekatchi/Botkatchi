@@ -16,40 +16,44 @@ public class MainRunner {
 
     public static void main(String[] args) {
 
-        if (args.length != 1) {
-            System.out.println("Please enter the bots token as the first argument e.g java -jar thisjar.jar tokenhere");
-            return;
-        }
+		if (args.length != 1) {
+			System.out.println("Please enter the bots token as the first argument e.g java -jar thisjar.jar tokenhere");
+			return;
+		}
 
-        IDiscordClient cli = BotUtils.getBuiltDiscordClient(args[0]);
+		IDiscordClient cli = BotUtils.getBuiltDiscordClient(args[0]);
 
-        // Register a listener via the EventSubscriber annotation which allows for organisation and delegation of events
-        cli.getDispatcher().registerListener(new CommandHandler());
+		// Register a listener via the EventSubscriber annotation which allows for organisation and delegation of events
+		cli.getDispatcher().registerListener(new CommandHandler());
 
-        // Only login after all events are registered otherwise some may be missed.
-        cli.login();
-        Scanner diddleboard = new Scanner(System.in);
+		// Only login after all events are registered otherwise some may be missed.
+		cli.login();
+		updateBotPresence(cli);
+		Random random = new Random();
+		String[] status = {"With 0's and 1's", "With Literal Cancer","Circle Simulator 2017", "100% Salt Juice", "League of Legends: Game of the Year Edition", "the Embodiment of Scarlet Failure", "Degenerate Dredge", "Infernities in 2017", "Tryhardt", "ＦＵＣＣ: The Game", "With Cardboard Stocks", "with the Bloodghast Brigade", "with the Amalgam-nation", "with the Nar-crew-moeba"};
+		cli.changePlayingText(status[random.nextInt(14)]);
+		Scanner diddleboard = new Scanner(System.in);
 
-        updateBotPresence(cli);
-        /*
-        while (true) {
-
+		while (true) {
+	/*
             150757350976782336 < General chat for clownfiesta
             162014083409772545 < Code_talk for clownfiesta
             318817870962229258 < bot_playground for clownfiesta
 
 */
-            Long channelID = Long.valueOf(diddleboard.nextLine());
-            String message = diddleboard.nextLine();
-            try {
-                new MessageBuilder(cli).withChannel(channelID).withContent(message).build();
-                updateBotPresence(cli);
-            } catch (DiscordException e) {
-                System.err.println("Message could not be sent with error: ");
-                e.printStackTrace();
-            }
+			Long channelID = Long.valueOf(diddleboard.nextLine());
+			String message = diddleboard.nextLine();
+			try {
+				new MessageBuilder(cli).withChannel(channelID).withContent(message).build();
+				updateBotPresence(cli);
+			} catch (DiscordException e) {
+				System.err.println("Message could not be sent with error: ");
+				e.printStackTrace();
+			}
+			updateBotPresence(cli);
 
-        }
+		}
+	}
 
 
     public static void updateBotPresence(IDiscordClient client)
