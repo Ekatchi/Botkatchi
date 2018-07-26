@@ -39,8 +39,8 @@ public class CommandHandler  {
     static String[] lewdresponse = {"https://i.imgur.com/p5BubWh.png", "https://i.imgur.com/QCBWHjM.png", "http://i.imgur.com/slyS7f2.png", "http://i.imgur.com/ULooYdP.png", "http://i.imgur.com/LQoT1OW.png", "https://cdn.discordapp.com/attachments/351519235995992064/351520002211577867/image.gif", "http://i.imgur.com/doe4nPa.jpg", "http://i.imgur.com/fRpRiqO.png", "http://i.imgur.com/V55fF7m.jpg", "http://i.imgur.com/LBqmJtv.png", "http://i.imgur.com/T0ulzsX.jpg", "http://i.imgur.com/lRYhuLd.png", "http://i.imgur.com/p9gF6TR.png", "http://i.imgur.com/CSq1r3e.jpg", "http://i.imgur.com/1KlGNxi.png"};
     static String[] joeyface = {"http://imgur.com/UOZsti4.jpg", "http://imgur.com/RV1kPff.jpg", "http://imgur.com/UmKzkS5.jpg", "http://imgur.com/Z3IanGI.jpg", "http://imgur.com/pOGfiAr.jpg", "http://imgur.com/JPxdb8q.jpg", "http://imgur.com/c3w3bLH.jpg"};
     static String[] hearthstonehero = {"Warlock", "Rogue", "Paladin", "Warrior", "Mage", "Shaman", "Druid", "Hunter", "Priest"};
-    static String[] hearthstoneterm1 = {"Dragon", "C'Thun", "N'Zoth", "Token", "Combo", "Aggro", "Face", "Control", "Reno", "Wallet", "Big Boy", "Miracle", "Patron", "Malygos", "Yogg", "Tempo", "Zoo", "Hand", "Midrange", "OTK", "Monkey", "Mech", "Value", "Quest", "Pirate"};
-    static String[] hearthstoneterm2 = {"Dragon", "C'Thun", "N'Zoth", "Token", "Combo", "Aggro", "Face", "Control", "Reno", "Wallet", "Murloc", "Miracle", "Patron", "Malygos", "Yogg", "Tempo", "Zoo", "Hand", "Midrange", "OTK", "Monkey", "Mech", "Value", "Quest", "Pirate"};
+    static String[] hearthstoneterm1 = {"Odd", "Even", "Dragon", "C'Thun", "N'Zoth", "Token", "Combo", "Aggro", "Face", "Control", "Reno", "Wallet", "Big Boy", "Miracle", "Patron", "Malygos", "Yogg", "Tempo", "Zoo", "Hand", "Midrange", "OTK", "Monkey", "Mech", "Value", "Quest", "Pirate"};
+    static String[] hearthstoneterm2 = {"Odd", "Even", "Dragon", "C'Thun", "N'Zoth", "Token", "Combo", "Aggro", "Face", "Control", "Reno", "Wallet", "Murloc", "Miracle", "Patron", "Malygos", "Yogg", "Tempo", "Zoo", "Hand", "Midrange", "OTK", "Monkey", "Mech", "Value", "Quest", "Pirate"};
     static String[] lennyface = {"( ͡° ͜ʖ ͡°)", "乁(◡‿◡✿)ㄏ", "ヽ༼ຈل͜ຈ༽ﾉ", "ᕙ༼ຈل͜ຈ༽ᕗ", "(つ°ヮ°)つ", "༼つ ◕_◕ ༽つ", "乁( ◔ ౪◔)ㄏ", "乁( ◔_◔)ㄏ", "(◉◞౪◟◉)", "(*'Д')", "(=ﾟДﾟ=)", "(^ ՞ਊ ՞)☛", "(ง ◉ω◉)ง", "(✿╹◡╹)", "ᑴಠωಠᑷ", "ʕ༼◕  ౪  ◕✿༽ʔ", "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", "(つ◕౪◕)つ", "٩(◕‿◕｡)۶", "(つ◕‿◕)ﾉ--✿", "https://cdn.discordapp.com/attachments/86919947267104768/215186661020008449/tumblr_nob50s8RB31tgwh9yo1_400.gif"};
 
     // A static map of commands mapping from command string to the functional impl
@@ -87,12 +87,12 @@ public class CommandHandler  {
             BotUtils.sendMessage(event.getChannel(), message);
         });
         commandMap.put("requestrole", (event, args) -> {
-            if(args.size() != 1)
-            {
-                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -requestrole [role]");
-                return;
-            }
-            String blah = args.toString().substring(1, args.toString().length() - 1).trim();
+        	String blah = "";
+        	for(int i = 0; i < args.size(); i++)
+			{
+				blah = blah + " "+ args.get(i).toString();
+				blah = blah.trim();
+			}
             try{IRole role = (event.getGuild().getRolesByName(blah).get(0));}
             catch (Exception e)
             {
@@ -120,12 +120,12 @@ public class CommandHandler  {
         });
 
         commandMap.put("relinquishrole", (event, args) -> {
-            if(args.size() != 1)
-            {
-                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -removerole [role]");
-                return;
-            }
-            String blah = args.toString().substring(1, args.toString().length() - 1).trim();
+			String blah = "";
+			for(int i = 0; i < args.size(); i++)
+			{
+				blah = blah + " "+ args.get(i).toString();
+				blah = blah.trim();
+			}
             try{IRole role = event.getGuild().getRolesByName(blah).get(0);}
             catch (Exception E)
             {
@@ -309,6 +309,16 @@ public class CommandHandler  {
             int dlocation = input.indexOf('d');
             int dicenum = Integer.parseInt(input.substring(0, dlocation));
             int dicenum2 = Integer.parseInt(input.substring(dlocation+1, input.length()));
+            if(dicenum > 100 || dicenum2 > 100)
+			{
+				BotUtils.sendMessage(event.getChannel(), "Please use reasonable numbers thank");
+				return;
+			}
+            if (dicenum2 == 0)
+					{
+						BotUtils.sendMessage(event.getChannel(), "Please don't try to roll a d0.");
+						return;
+					}
             int total = 0;
             for(int i = 0; i < dicenum; i++)
             {
@@ -335,9 +345,9 @@ public class CommandHandler  {
         });
 
         //Probably going to remove this one, too many good Chinese Mokou memes to upload to imgur and put into the list.
-        commandMap.put("mokoumeme", (event, args) -> {
+        /*commandMap.put("mokoumeme", (event, args) -> {
             BotUtils.sendMessage(event.getChannel(), memokou[random.nextInt(5)]);
-        });
+        });*/
 
         //Randomly slaps together 1-3 Hearthstone terms and a class. Doesn't give duplicates, and has "Jade" and "Handbuff" for their respective classes.
         commandMap.put("SMorcerer", (event, args) -> {
@@ -359,7 +369,7 @@ public class CommandHandler  {
             if(args.size() == 0) {
                 temphero = hearthstonehero[random.nextInt(9)];
             }
-            int tempint = random.nextInt(24);
+            int tempint = random.nextInt(26);
             String tempterm = hearthstoneterm1[tempint];
             switch (random.nextInt(4)) {
                 case 0:
@@ -367,7 +377,7 @@ public class CommandHandler  {
                         hearthstoneterm1[tempint] = "Jade";
                     else if (temphero.equals("Paladin") || temphero.equals("Hunter") || temphero.equals("Warrior"))
                         hearthstoneterm1[tempint] = "Handbuff";
-                    BotUtils.sendMessage(event.getChannel(), hearthstoneterm1[random.nextInt(25)] + " " + temphero);
+                    BotUtils.sendMessage(event.getChannel(), hearthstoneterm1[random.nextInt(27)] + " " + temphero);
                     hearthstoneterm1[tempint] = tempterm;
                     break;
                 case 1:
@@ -375,7 +385,7 @@ public class CommandHandler  {
                         hearthstoneterm1[tempint] = "Jade";
                     else if (temphero.equals("Paladin") || temphero.equals("Hunter") || temphero.equals("Warrior"))
                         hearthstoneterm1[tempint] = "Handbuff";
-                    BotUtils.sendMessage(event.getChannel(), hearthstoneterm1[random.nextInt(25)] + " " + temphero);
+                    BotUtils.sendMessage(event.getChannel(), hearthstoneterm1[random.nextInt(27)] + " " + temphero);
                     hearthstoneterm1[tempint] = tempterm;
                     break;
                 case 2:
@@ -383,8 +393,8 @@ public class CommandHandler  {
                         hearthstoneterm1[tempint] = "Jade";
                     else if (temphero.equals("Paladin") || temphero.equals("Hunter") || temphero.equals("Warrior"))
                         hearthstoneterm1[tempint] = "Handbuff";
-                    String term1 = hearthstoneterm1[random.nextInt(25)];
-                    String term2 = hearthstoneterm2[random.nextInt(25)];
+                    String term1 = hearthstoneterm1[random.nextInt(27)];
+                    String term2 = hearthstoneterm2[random.nextInt(27)];
                     while (term1.equals(term2)) {
                         term2 = hearthstoneterm2[random.nextInt(25)];
                     }
@@ -396,13 +406,13 @@ public class CommandHandler  {
                         hearthstoneterm1[tempint] = "Jade";
                     else if (temphero.equals("Paladin") || temphero.equals("Hunter") || temphero.equals("Warrior"))
                         hearthstoneterm1[tempint] = "Handbuff";
-                    String term11 = hearthstoneterm1[random.nextInt(25)];
-                    String term12 = hearthstoneterm2[random.nextInt(25)];
-                    String term13 = hearthstoneterm2[random.nextInt(25)];
+                    String term11 = hearthstoneterm1[random.nextInt(27)];
+                    String term12 = hearthstoneterm2[random.nextInt(27)];
+                    String term13 = hearthstoneterm2[random.nextInt(27)];
                     while (term11.equals(term12) || term11.equals(term13) || term12.equals(term13)) {
-                        term11 = hearthstoneterm1[random.nextInt(25)];
-                        term12 = hearthstoneterm2[random.nextInt(25)];
-                        term13 = hearthstoneterm2[random.nextInt(25)];
+                        term11 = hearthstoneterm1[random.nextInt(27)];
+                        term12 = hearthstoneterm2[random.nextInt(27)];
+                        term13 = hearthstoneterm2[random.nextInt(27)];
                     }
                     BotUtils.sendMessage(event.getChannel(), term11 + " " + term12 + " " + term13 + " " + temphero);
                     hearthstoneterm1[tempint] = tempterm;
@@ -413,26 +423,26 @@ public class CommandHandler  {
         });
 
         //Might get rid of the meme commands. Kind of pointless. But at the same time...
-        commandMap.put("joeyface", (event, args) -> {
+       /*commandMap.put("joeyface", (event, args) -> {
             BotUtils.sendMessage(event.getChannel(), joeyface[random.nextInt(7)]);
-        });
+        });*/
 
         //Not a listed command, but it's funny. Poor Jay.
         commandMap.put("bestplay", (event, args) -> {
             BotUtils.sendMessage(event.getChannel(), "Embrace the Shadow into Reno Jackson is a powerful play that immediately ends the game.");
         });
 
-        commandMap.put("ugu", (event, args) ->{
+        /*commandMap.put("ugu", (event, args) ->{
             BotUtils.sendMessage(event.getChannel(), " •́⩊•̀ ");
-        });
+        });*/
 
-        commandMap.put("omemechan", (event, args) -> {
+        /*commandMap.put("omemechan", (event, args) -> {
             BotUtils.sendMessage(event.getChannel(), omemechan[random.nextInt(3)]);
         });
 
         commandMap.put("lewd", (event, args) -> {
             BotUtils.sendMessage(event.getChannel(), lewdresponse[random.nextInt(14)]);
-        });
+        });*/
 
 
         commandMap.put("thinksphere", (event, args) ->{
@@ -524,12 +534,13 @@ public class CommandHandler  {
                 BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks, no spaces) ");
             }
         });
-        commandMap.put("restart", (event, args) ->{
+        commandMap.put("kms", (event, args) ->{
             EnumSet userpermissions = event.getAuthor().getPermissionsForGuild(event.getGuild());
             String userperms = userpermissions.toString();
             EnumSet botpermissions = event.getClient().getOurUser().getPermissionsForGuild(event.getGuild());
             String botperms = botpermissions.toString();
-            if(!(userperms.contains(botperms))){
+            String userID = event.getAuthor().getStringID();
+            if(!(userID.equals("91353316247740416"))){
                 BotUtils.sendMessage(event.getChannel(), "Error: You do not have permission to do that.");
                 return;
             }
@@ -626,13 +637,13 @@ public class CommandHandler  {
         //Outputs a pretty Embeded help block. Lists commands, as well as some relevant information about the bot.
         commandMap.put("help", (event, args) -> {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.appendField("Garbage Meme Commands: ", "thinksphere\nvaynespotting\nvaynspottingaddscore\nugu\ndonger \nhappyday \nmokoumeme \nSMorcerer \njoeyface \nomemechan \nlewd", true);
-            builder.appendField("More Relevant Commands: ", "choose\nrestart\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use)\njoinvoice \nleavevoice \nmyava \ntheirava \nplaysong\nskipsong", true);
+            builder.appendField("Garbage Meme Commands: ", "thinksphere\nvaynespotting\nvaynspottingaddscore\ndonger \nhappyday \nSMorcerer", true);
+            builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use)\njoinvoice \nleavevoice \nmyava \ntheirava \nplaysong\nskipsong", true);
             builder.withAuthorName("Botkatchi");
             builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
             builder.withColor(200, 0, 0);
-            builder.withDescription("A multi-purpose Discord bot made by Ekatchi. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.");
-            builder.withFooterText("Last updated: December 10th, 2017");
+            builder.withDescription("A multi-purpose Discord bot made by Ekatchi. Mostly for memes. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.");
+            builder.withFooterText("Last updated: July 25th 2018");
             RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
         });
         /**
@@ -690,6 +701,9 @@ public class CommandHandler  {
         // First ensure at least the command and prefix is present, the arg length can be handled by your command func
         if(argArray.length == 0)
             return;
+
+        if(argArray[0].toString().equals("<@205395140527783957>"))
+        	BotUtils.sendMessage(event.getChannel(), event.getAuthor().mention());
 
         //Same as hell my dude.
         if (argArray[0].toString().equals("Same.") || argArray[0].toString().toUpperCase().equals("SAME") || argArray[0].toString().equals("same.") || argArray[0].toString().equals("Me too."))

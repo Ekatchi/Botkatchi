@@ -50,7 +50,6 @@ public class MainRunner {
 				System.err.println("Message could not be sent with error: ");
 				e.printStackTrace();
 			}
-			updateBotPresence(cli);
 
 		}
 	}
