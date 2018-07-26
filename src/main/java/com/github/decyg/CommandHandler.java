@@ -706,8 +706,11 @@ public class CommandHandler  {
         	BotUtils.sendMessage(event.getChannel(), event.getAuthor().mention());
 
         //Same as hell my dude.
-        if (argArray[0].toString().equals("Same.") || argArray[0].toString().toUpperCase().equals("SAME") || argArray[0].toString().equals("same.") || argArray[0].toString().equals("Me too."))
-            BotUtils.sendMessage(event.getChannel(), response[random.nextInt(5)]);
+        if (argArray[0].toString().equals("Same.") || argArray[0].toString().toUpperCase().equals("SAME") || argArray[0].toString().equals("same.") || argArray[0].toString().equals("Me too.")) {
+			if(event.getAuthor().getStringID().equals("163971321435389952"))
+				return;
+        	BotUtils.sendMessage(event.getChannel(), response[random.nextInt(5)]);
+		}
 
         // Check if the first arg (the command) starts with the prefix defined in the utils class
         if(!argArray[0].startsWith(BotUtils.BOT_PREFIX))
