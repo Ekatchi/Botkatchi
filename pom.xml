@@ -15,10 +15,10 @@
   ~     You should have received a copy of the GNU Lesser General Public License
   ~     along with Discord4J.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.austinv11</groupId>
@@ -44,6 +44,13 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.discord4j</groupId> <!-- However our packages are all under sx.blah in version 2.x! -->
+			<artifactId>Discord4J</artifactId>
+			<version>@VERSION@</version>
+		</dependency>
+
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-api</artifactId>
@@ -74,12 +81,13 @@
 			<artifactId>httpmime</artifactId>
 			<version>4.5.4</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
@@ -298,3 +306,4 @@
 		</repository>
 	</repositories>
 </project>
+

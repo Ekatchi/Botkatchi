@@ -1,29 +1,24 @@
 package com.github.decyg;
 
-        import com.vdurmont.emoji.Emoji;
-        import com.vdurmont.emoji.EmojiManager;
         import sx.blah.discord.api.IDiscordClient;
-        import sx.blah.discord.api.events.EventSubscriber;
-        import sx.blah.discord.handle.impl.events.*;
-        import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-		import sx.blah.discord.handle.impl.events.guild.member.UserBanEvent;
-		import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
-		import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
-		import sx.blah.discord.handle.impl.events.guild.voice.user.*;
-        import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelJoinEvent;
-        import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelLeaveEvent;
-        import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelMoveEvent;
-        import sx.blah.discord.handle.obj.*;
-        import java.io.*;
-        import java.util.*;
-        import java.util.Collections;
-        import java.util.Comparator;
+import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserBanEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
+import sx.blah.discord.handle.impl.events.guild.member.UserLeaveEvent;
+import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelJoinEvent;
+import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelLeaveEvent;
+import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelMoveEvent;
+import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.IVoiceChannel;
+import sx.blah.discord.util.EmbedBuilder;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RequestBuffer;
+import sx.blah.discord.util.audio.AudioPlayer;
 
-        import sx.blah.discord.util.*;
-        import sx.blah.discord.util.audio.AudioPlayer;
-        import java.util.Random;
-
-        import java.util.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by declan on 04/04/2017.
@@ -186,7 +181,7 @@ public class CommandHandler  {
                     if(event.getGuild().getRoles().contains(event.getGuild().getRolesByName(blah).get(0)))
                     {
                         IRole role = event.getGuild().getRolesByName(blah).get(0);
-                        try{event.getMessage().getAuthor().addRole(role);}
+                        try{event.getMessage().getMentions().get(0).addRole(role);}
                         catch (Exception e)
                         {
                             BotUtils.sendMessage(event.getChannel(), "Error: Requested role hierarchy is too high.");
@@ -456,7 +451,7 @@ public class CommandHandler  {
                 return;
             }
             String commandlist = "";
-            File file = new File("C:\\Users\\Botkatchi\\Desktop\\customcommands.txt");
+            File file = new File("C:\\Users\\Ka\\Desktop\\customcommands.txt");
             try(Scanner sc = new Scanner(file))
             {
                 while(sc.hasNextLine())
@@ -496,7 +491,7 @@ public class CommandHandler  {
 						return;
 					}
 
-            File outFile = new File("C:\\Users\\Botkatchi\\Desktop\\customcommands.txt");
+            File outFile = new File("C:\\Users\\Ka\\Desktop\\customcommands.txt");
             try(FileWriter fWriter = new FileWriter(outFile, true))
             {
                 PrintWriter pWriter = new PrintWriter(fWriter);
@@ -521,13 +516,45 @@ public class CommandHandler  {
         commandMap.put("choose", (event, args) ->{
             if (args.size() != 0 && args.size() != 1)
             {
-                int rand = random.nextInt(args.size());
-                if(!(args.get(rand).contains("\"")))
-                {
-                    BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks) ");
-                    return;
-                }
-                BotUtils.sendMessage(event.getChannel(), "I choose " + args.get(rand).substring(1, args.get(rand).length() - 1) + "!");
+            	String chooseString = args.toString();
+            	System.out.println(args);
+            	for(int i = 0; i < args.size(); i++)
+				{
+					if(!(args.get(i).contains("\"")))
+					{
+						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks) ");
+						return;
+					}
+				}
+
+            	chooseString = chooseString.replace('[', ' ');
+            	chooseString = chooseString.replaceAll("]", "");
+            	chooseString = chooseString.replaceAll(",", "");
+            	ArrayList<String> list = new ArrayList<String>();
+				int lastQuote = 2;
+				for (int i = 2; i < chooseString.length()+1; i++)
+				{
+					if(chooseString.charAt(i) == '"')
+					{
+						list.add(chooseString.substring(lastQuote, i));
+						i++;
+						lastQuote = i;
+					}
+				}
+				for(int i = 0; i < list.size(); i++)
+				{
+					if(list.get(i).equals (" "))
+					{
+						list.remove(i);
+					}
+				}
+				if(list.size() <= 1)
+				{
+					BotUtils.sendMessage(event.getChannel(), "Error: one or less choices given.");
+					return;
+				}
+                int rand = random.nextInt(list.size());
+                BotUtils.sendMessage(event.getChannel(), "I choose " + list.get(rand)+ "!");
             }
             else
             {
