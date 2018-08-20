@@ -517,22 +517,20 @@ public class CommandHandler  {
             if (args.size() != 0 && args.size() != 1)
             {
             	String chooseString = args.toString();
-            	System.out.println(args);
             	for(int i = 0; i < args.size(); i++)
 				{
-					if(!(args.get(i).contains("\"")))
+					if(!(chooseString.contains("\"")))
 					{
 						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks) ");
 						return;
 					}
 				}
-
             	chooseString = chooseString.replace('[', ' ');
             	chooseString = chooseString.replaceAll("]", "");
             	chooseString = chooseString.replaceAll(",", "");
             	ArrayList<String> list = new ArrayList<String>();
 				int lastQuote = 2;
-				for (int i = 2; i < chooseString.length()+1; i++)
+				for (int i = 2; i < chooseString.length(); i++)
 				{
 					if(chooseString.charAt(i) == '"')
 					{
