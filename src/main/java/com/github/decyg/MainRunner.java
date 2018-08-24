@@ -2,11 +2,13 @@ package com.github.decyg;
 
 
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.util.*;
-
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MessageBuilder;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by declan on 03/04/2017.
@@ -28,10 +30,7 @@ public class MainRunner {
 
 		// Only login after all events are registered otherwise some may be missed.
 		cli.login();
-		updateBotPresence(cli);
 		Random random = new Random();
-		String[] status = {"With 0's and 1's", "With Literal Cancer","Circle Simulator 2017", "100% Salt Juice", "League of Legends: Game of the Year Edition", "the Embodiment of Scarlet Failure", "Degenerate Dredge", "Infernities in 2017", "Tryhardt", "ＦＵＣＣ: The Game", "With Cardboard Stocks", "with the Bloodghast Brigade", "with the Amalgam-nation", "with the Nar-crew-moeba"};
-		cli.changePlayingText(status[random.nextInt(14)]);
 		Scanner diddleboard = new Scanner(System.in);
 
 		while (true) {
@@ -53,15 +52,35 @@ public class MainRunner {
 				e.printStackTrace();
 			}
 
+			Timer timer = new Timer ();
+			TimerTask hourlyTask = new TimerTask() {
+				@Override
+				public void run () {
+					try
+					{
+						updateBotPresence(cli);
+					}
+					catch (DiscordException e)
+					{
+						IDiscordClient thisclient = BotUtils.getBuiltDiscordClient("MjA1Mzk1MTQwNTI3NzgzOTU3.DA5F_w.7h5vrV6EpWLhAbEUZU-tB56v-to");
+						thisclient.logout();
+						thisclient.login();
+					}
+				}
+			};
+			timer.schedule (hourlyTask, 0l, 1000*60*60);
 		}
 	}
+
+
+// schedule the task to run starting now and then every hour...
 
 
     public static void updateBotPresence(IDiscordClient client)
     {
         Random random = new Random();
-        String[] status = {"With 0's and 1's", "With Literal Cancer","Circle Simulator 2017", "100% Salt Juice", "League of Legends: Game of the Year Edition", "the Embodiment of Scarlet Failure", "Degenerate Dredge", "Infernities in 2017", "Tryhardt", "ＦＵＣＣ: The Game", "With Cardboard Stocks", "with the Bloodghast Brigade", "with the Amalgam-nation", "with the Nar-crew-moeba"};
-        client.changePlayingText(status[random.nextInt(14)]);
+        String[] status = {"With 0's and 1's", "With Literal Cancer","Circle Simulator 2018", "100% Salt Juice", "League of Legends: Game of the Year Edition", "with her sisters", "Degenerate Dredge", "Infernities in 2018", "with Prinz and Pals", "ＦＵＣＣ: The Game", "With Cardboard Stocks", "with the Bloodghast Brigade", "with the Amalgam-nation", "with the Nar-crew-moeba", "with actual stocks", "Waifu Simulator: Gun Edition", "Vengevine Turbo"};
+        client.changePlayingText(status[random.nextInt(16)]);
     }
     }
 

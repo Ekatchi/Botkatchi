@@ -1,6 +1,6 @@
 package com.github.decyg;
 
-        import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserBanEvent;
@@ -17,7 +17,10 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
 import sx.blah.discord.util.audio.AudioPlayer;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -576,6 +579,7 @@ public class CommandHandler  {
             BotUtils.sendMessage(event.getChannel(), "Restart successful.");
         });
 
+        /*Suddenly stopped working. Oh well.
         commandMap.put("vaynespotting", (event, args) -> {
             EmbedBuilder builder = new EmbedBuilder();
             builder.withColor(0, 0, 100);
@@ -599,7 +603,7 @@ public class CommandHandler  {
                             "`afk`: +3\n" +
                             "`bg`: +4\n" + "`zzz` with an additional point for each additional `z`: +2+z's\n"
                     , true);
-            File file = new File("C:\\Users\\Botkatchi\\Desktop\\vaynespotting.txt");
+            File file = new File("C:\\Users\\Ka\\Desktop\\vaynespotting.txt");
             TreeMap<Integer, String> tm= new TreeMap<Integer, String>();
             try (Scanner sc = new Scanner(file)) {
                 while (sc.hasNextLine())
@@ -658,20 +662,19 @@ public class CommandHandler  {
             {
                 BotUtils.sendMessage(event.getChannel(), "Error: Could not access the database. Please do not try again.");
             }
-        });
+        }); */
         //Outputs a pretty Embeded help block. Lists commands, as well as some relevant information about the bot.
         commandMap.put("help", (event, args) -> {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.appendField("Garbage Meme Commands: ", "thinksphere\nvaynespotting\nvaynspottingaddscore\ndonger \nhappyday \nSMorcerer", true);
-            builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use)\njoinvoice \nleavevoice \nmyava \ntheirava \nplaysong\nskipsong", true);
+            builder.appendField("Garbage Meme Commands: ", "thinksphere\ndonger \nhappyday \nSMorcerer", true);
+            builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use) \nmyava \ntheirava", true);
             builder.withAuthorName("Botkatchi");
             builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
             builder.withColor(200, 0, 0);
             builder.withDescription("A multi-purpose Discord bot made by Ekatchi. Mostly for memes. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.");
-            builder.withFooterText("Last updated: July 25th 2018");
+            builder.withFooterText("Last updated: August 24th 2018");
             RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
-        });
-        /**
+        }); /*
          //An example embed block, use for building other ones.
          commandMap.put("exampleembed", (event, args) -> {
 
