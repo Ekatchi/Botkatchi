@@ -571,12 +571,13 @@ public class CommandHandler  {
 						Color color = Color.valueOf(args.get(0));
 						if(args.size()==2)
 						{
-							boolean pingable = false;
 							if (event.getGuild().getRolesByName(args.get(1)).isEmpty()) {
 								EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
 								java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
-								event.getGuild().createRole().edit(awtColor, false, args.get(1), perms, pingable);
+								event.getGuild().createRole().edit(awtColor, false, args.get(1), perms, false);
 								BotUtils.sendMessage(event.getChannel(), "Role " + args.get(1) + " successfully made.");
+								event.getAuthor().addRole(event.getGuild().getRolesByName(args.get(1)).get(0));
+								BotUtils.sendMessage(event.getChannel(), "You have successfuly given the " + args.get(1) + " role.");
 							} else {
 								BotUtils.sendMessage(event.getChannel(), "Error: Role already exists.");
 							}
@@ -600,7 +601,7 @@ public class CommandHandler  {
 					}
 			}
 			else
-				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcolor [hexidecimalvalue] [rolename] [pingableBoolean]");
+				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcolor [hexidecimalvalue] [rolename] (true if pingable)");
 
 		});
         commandMap.put("kms", (event, args) ->{
