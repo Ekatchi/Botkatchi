@@ -57,6 +57,7 @@ public class MainRunner {
             318817870962229258 < bot_playground for clownfiesta
             471508288794787862 < #gamimng-gacha on #gaming-gacha
             471509973185200148 < general on #gaming-gacha
+            471514042826096640 < #bot_spam on #gaming-gacha
 
 */
 			Long channelID = Long.valueOf(diddleboard.nextLine());
