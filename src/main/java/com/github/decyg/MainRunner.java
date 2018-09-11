@@ -32,7 +32,24 @@ public class MainRunner {
 		cli.login();
 		Random random = new Random();
 		Scanner diddleboard = new Scanner(System.in);
-
+		Timer timer = new Timer ();
+		TimerTask hourlyTask = new TimerTask() {
+			@Override
+			public void run () {
+				try
+				{
+					updateBotPresence(cli);
+					System.out.println("------------Updated--------------");
+				}
+				catch (DiscordException e)
+				{
+					IDiscordClient thisclient = BotUtils.getBuiltDiscordClient("MjA1Mzk1MTQwNTI3NzgzOTU3.DA5F_w.7h5vrV6EpWLhAbEUZU-tB56v-to");
+					thisclient.logout();
+					thisclient.login();
+					System.out.println("-------------restarted-------------");
+				}
+			}
+		};
 		while (true) {
 	/*
             150757350976782336 < General chat for clownfiesta
@@ -52,28 +69,11 @@ public class MainRunner {
 				e.printStackTrace();
 			}
 
-			Timer timer = new Timer ();
-			TimerTask hourlyTask = new TimerTask() {
-				@Override
-				public void run () {
-					try
-					{
-						updateBotPresence(cli);
-					}
-					catch (DiscordException e)
-					{
-						IDiscordClient thisclient = BotUtils.getBuiltDiscordClient("MjA1Mzk1MTQwNTI3NzgzOTU3.DA5F_w.7h5vrV6EpWLhAbEUZU-tB56v-to");
-						thisclient.logout();
-						thisclient.login();
-					}
-				}
-			};
-			timer.schedule (hourlyTask, 0l, 1000*60*60);
+
+			timer.schedule(hourlyTask, 0l, 1000*60*60);
 		}
 	}
 
-
-// schedule the task to run starting now and then every hour...
 
 
     public static void updateBotPresence(IDiscordClient client)

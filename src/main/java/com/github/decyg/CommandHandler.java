@@ -1,5 +1,6 @@
 package com.github.decyg;
 
+import javafx.scene.paint.Color;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -12,6 +13,8 @@ import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelMoveE
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
+import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
@@ -99,7 +102,7 @@ public class CommandHandler  {
             }
             if(event.getMessage().getAuthor().getRolesForGuild(event.getGuild()).contains(event.getGuild().getRolesByName(blah).get(0)))
             {
-                BotUtils.sendMessage(event.getChannel(), "Error: " + event.getMessage().getMentions().get(0) + " already has " + blah + " role.");
+                BotUtils.sendMessage(event.getChannel(), "Error: you already have the " + blah + " role.");
                 return;
             }
             if(event.getGuild().getRoles().contains(event.getGuild().getRolesByName(blah).get(0)))
@@ -562,11 +565,27 @@ public class CommandHandler  {
                 BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks, no spaces) ");
             }
         });
+        commandMap.put("customcolor", (event, args) ->{
+        	if(args.size()==3) {
+				try {
+
+					if (event.getGuild().getRoles().contains(args.get(1).)) {
+						BotUtils.sendMessage(event.getChannel(), "Error: Role name already exists.");
+					}
+					Color color = Color.valueOf(args.get(0));
+					boolean pingable = args.get(2).toLowerCase().equals("true");
+					EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
+					java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
+					event.getGuild().createRole().edit(awtColor, false, args.get(1), perms, pingable);
+				} catch (IndexOutOfBoundsException E) {
+					
+				}
+			}
+			else
+				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcolor [hexidecimalvalue] [rolename] [pingableBoolean]");
+
+		});
         commandMap.put("kms", (event, args) ->{
-            EnumSet userpermissions = event.getAuthor().getPermissionsForGuild(event.getGuild());
-            String userperms = userpermissions.toString();
-            EnumSet botpermissions = event.getClient().getOurUser().getPermissionsForGuild(event.getGuild());
-            String botperms = botpermissions.toString();
             String userID = event.getAuthor().getStringID();
             if(!(userID.equals("91353316247740416"))){
                 BotUtils.sendMessage(event.getChannel(), "Error: You do not have permission to do that.");
@@ -733,12 +752,12 @@ public class CommandHandler  {
         if(argArray[0].toString().equals("<@205395140527783957>"))
         	BotUtils.sendMessage(event.getChannel(), event.getAuthor().mention());
 
-        //Same as hell my dude.
-        if (argArray[0].toString().equals("Same.") || argArray[0].toString().toUpperCase().equals("SAME") || argArray[0].toString().equals("same.") || argArray[0].toString().equals("Me too.")) {
+        //No longer same as hell my dude.
+        /*if (argArray[0].toString().equals("Same.") || argArray[0].toString().toUpperCase().equals("SAME") || argArray[0].toString().equals("same.") || argArray[0].toString().equals("Me too.")) {
 			if(event.getAuthor().getStringID().equals("163971321435389952"))
 				return;
         	BotUtils.sendMessage(event.getChannel(), response[random.nextInt(5)]);
-		}
+		}*/
 
         // Check if the first arg (the command) starts with the prefix defined in the utils class
         if(!argArray[0].startsWith(BotUtils.BOT_PREFIX))
@@ -773,7 +792,6 @@ public class CommandHandler  {
             }
             catch (IOException e)
             {
-                BotUtils.sendMessage(event.getChannel(), "Error processing command.");
             }
         }
 
@@ -808,7 +826,14 @@ public class CommandHandler  {
     {
         if(event.getUser().getName().equals("Botkatchi"))
             return;
-        BotUtils.sendMessage(event.getGuild().getChannelsByName("voice").get(0), event.getUser().getDisplayName(event.getGuild()) + " has joined **" + event.getVoiceChannel() + "**.");
+        try
+		{
+			BotUtils.sendMessage(event.getGuild().getChannelsByName("voice").get(0), event.getUser().getDisplayName(event.getGuild()) + " has joined **" + event.getVoiceChannel() + "**.");
+		}
+		catch(DiscordException e)
+		{
+			return;
+		}
     }
 
     //When a user moves from one voice channel to another, the bot will send a message to the #voice in that server, saying what channels they moved between.
@@ -817,7 +842,14 @@ public class CommandHandler  {
     {
         if(event.getUser().getName().equals("Botkatchi"))
             return;
-        BotUtils.sendMessage(event.getGuild().getChannelsByName("voice").get(0), event.getUser().getDisplayName(event.getGuild()) + " has moved from **" + event.getOldChannel().getName() + "** to **" + event.getNewChannel().getName() + "**.");
+        try
+		{
+        	BotUtils.sendMessage(event.getGuild().getChannelsByName("voice").get(0), event.getUser().getDisplayName(event.getGuild()) + " has moved from **" + event.getOldChannel().getName() + "** to **" + event.getNewChannel().getName() + "**.");
+		}
+		catch(DiscordException e)
+		{
+			return;
+		}
     }
 
     //When a user leaves a voice channel, the bot will send a message to the #voice of that server, saying what channel they left.
@@ -826,7 +858,14 @@ public class CommandHandler  {
     {
         if(event.getUser().getName().equals("Botkatchi"))
             return;
-        BotUtils.sendMessage(event.getGuild().getChannelsByName("voice").get(0), event.getUser().getDisplayName(event.getGuild()) + " has left **" + event.getVoiceChannel() + "**.");
+        try
+		{
+			BotUtils.sendMessage(event.getGuild().getChannelsByName("voice").get(0), event.getUser().getDisplayName(event.getGuild()) + " has left **" + event.getVoiceChannel() + "**.");
+		}
+		catch(DiscordException e)
+		{
+			return;
+		}
     }
 
 
