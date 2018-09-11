@@ -566,20 +566,38 @@ public class CommandHandler  {
             }
         });
         commandMap.put("customcolor", (event, args) ->{
-        	if(args.size()==3) {
-				try {
+        	if(args.size()==2 || args.size()==3) {
+					try{
+						Color color = Color.valueOf(args.get(0));
+						if(args.size()==2)
+						{
+							boolean pingable = false;
+							if (event.getGuild().getRolesByName(args.get(1)).isEmpty()) {
+								EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
+								java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
+								event.getGuild().createRole().edit(awtColor, false, args.get(1), perms, pingable);
+								BotUtils.sendMessage(event.getChannel(), "Role " + args.get(1) + " successfully made.");
+							} else {
+								BotUtils.sendMessage(event.getChannel(), "Error: Role already exists.");
+							}
+						}
+						else {
+							boolean pingable = args.get(2).toLowerCase().equals("true");
+							if (event.getGuild().getRolesByName(args.get(1)).isEmpty()) {
+								EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
+								java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
+								event.getGuild().createRole().edit(awtColor, false, args.get(1), perms, pingable);
+								BotUtils.sendMessage(event.getChannel(), "Role " + args.get(1) + " successfully made.");
+							} else {
+								BotUtils.sendMessage(event.getChannel(), "Error: Role already exists.");
+							}
+						}
 
-					if (event.getGuild().getRoles().contains(args.get(1).)) {
-						BotUtils.sendMessage(event.getChannel(), "Error: Role name already exists.");
 					}
-					Color color = Color.valueOf(args.get(0));
-					boolean pingable = args.get(2).toLowerCase().equals("true");
-					EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
-					java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
-					event.getGuild().createRole().edit(awtColor, false, args.get(1), perms, pingable);
-				} catch (IndexOutOfBoundsException E) {
-					
-				}
+					catch (Exception E)
+					{
+						BotUtils.sendMessage(event.getChannel(), "Error: provided color value was not hexidecimal");
+					}
 			}
 			else
 				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcolor [hexidecimalvalue] [rolename] [pingableBoolean]");
@@ -686,12 +704,12 @@ public class CommandHandler  {
         commandMap.put("help", (event, args) -> {
             EmbedBuilder builder = new EmbedBuilder();
             builder.appendField("Garbage Meme Commands: ", "thinksphere\ndonger \nhappyday \nSMorcerer", true);
-            builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use) \nmyava \ntheirava", true);
+            builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use) \nmyava \ntheirava \n customcolor", true);
             builder.withAuthorName("Botkatchi");
             builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
             builder.withColor(200, 0, 0);
             builder.withDescription("A multi-purpose Discord bot made by Ekatchi. Mostly for memes. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.");
-            builder.withFooterText("Last updated: August 24th 2018");
+            builder.withFooterText("Last updated: September 11th 2018");
             RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
         }); /*
          //An example embed block, use for building other ones.
