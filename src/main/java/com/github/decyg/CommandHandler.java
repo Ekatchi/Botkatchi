@@ -508,7 +508,7 @@ public class CommandHandler  {
 						return;
 					}
 					if (args.size() == 1) {
-						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcommandadd [commandname] [text] to add command. \nCustom commands are called by simply using `-[commandname]`.\n For a list of custom commands, call `-customcommmandlist`.");
+						BotUtils.sendMessage(event.getChannel(), "Error: Usage:\n-customcommandadd [commandname] [text]\nto add command.\nCustom commands are called by simply\nusing `-[commandname]`.\nFor a list of custom commands, call `-customcommmandlist`.");
 						return;
 					}
 
@@ -535,6 +535,7 @@ public class CommandHandler  {
         });
 
         commandMap.put("customcommandremove", (event, args) ->{
+        	Boolean removed = false;
         	if(args.size() != 1)
 			{
 				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcommandremove [commandname]. Command can only be removed by the person who added it.");
@@ -551,11 +552,26 @@ public class CommandHandler  {
 						List<String> updatedLines = lines.stream().filter(s -> !s.contains(searchString)).collect(Collectors.toList());
 						FileUtils.writeLines(file, updatedLines, false);
 						BotUtils.sendMessage(event.getChannel(), "Custom command " + args.get(0) + " has been successfully removed.");
+						removed = true;
 					}
 					else if (lines.get(i).contains(args.get(0)))
 					{
-						BotUtils.sendMessage(event.getChannel(),"Error: Only the person who added the command may remove it.");
+						if(event.getAuthor().getPermissionsForGuild(event.getGuild()).toString().contains("MANAGE_MESSAGES") || event.getAuthor().getPermissionsForGuild(event.getGuild()).toString().contains("MANAGE_ROLES"))
+						{
+							List<String> updatedLines = lines.stream().filter(s -> !s.contains(args.get(0))).collect(Collectors.toList());
+							FileUtils.writeLines(file, updatedLines, false);
+							BotUtils.sendMessage(event.getChannel(), "Custom command " + args.get(0) + " has been successfully removed. Moderator overwrite.");
+							removed = true;
+						}
+						else
+						{
+							BotUtils.sendMessage(event.getChannel(), "Error: Only the person who added the command may remove it.");
+						}
 					}
+				}
+				if(!removed)
+				{
+					BotUtils.sendMessage(event.getChannel(), "Error: command does not exist.\nUse `-customcommandlist` to get a list of current commands.");
 				}
 			}
 			catch (IOException e)
