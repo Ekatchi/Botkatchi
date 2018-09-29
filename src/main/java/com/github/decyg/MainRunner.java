@@ -55,7 +55,7 @@ public class MainRunner {
             150757350976782336 < General chat for clownfiesta
             162014083409772545 < Code_talk for clownfiesta
             318817870962229258 < bot_playground for clownfiesta
-            471508288794787862 < #gamimng-gacha on #gaming-gacha
+            471508288794787862 < #gaming-gacha on #gaming-gacha
             471509973185200148 < general on #gaming-gacha
             471514042826096640 < #bot_spam on #gaming-gacha
 

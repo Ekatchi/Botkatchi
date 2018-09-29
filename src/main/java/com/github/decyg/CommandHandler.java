@@ -1,6 +1,7 @@
 package com.github.decyg;
 
 import javafx.scene.paint.Color;
+import org.apache.commons.io.FileUtils;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -25,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by declan on 04/04/2017.
@@ -48,6 +50,19 @@ public class CommandHandler  {
     private static Map<String, Command> commandMap = new HashMap<>();
     static {
 
+
+		//Outputs a pretty Embeded help block. Lists commands, as well as some relevant information about the bot.
+		commandMap.put("help", (event, args) -> {
+			EmbedBuilder builder = new EmbedBuilder();
+			builder.appendField("Garbage Meme Commands: ", "thinksphere\ndonger \nhappyday \nSMorcerer", true);
+			builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\ncustomcommandremove\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use) \nmyava \ntheirava \n customcolor", true);
+			builder.withAuthorName("Botkatchi");
+			builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
+			builder.withColor(200, 0, 0);
+			builder.withDescription("A multi-purpose Discord bot made by Ekatchi. Mostly for memes. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.\n(In all cases [] is used, ignore.");
+			builder.withFooterText("Last updated: September 29th 2018");
+			RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
+		});
 
         // If the IUser that called this is in a voice channel, join them
         commandMap.put("joinvoice", (event, args) -> {
@@ -519,6 +534,36 @@ public class CommandHandler  {
 
         });
 
+        commandMap.put("customcommandremove", (event, args) ->{
+        	if(args.size() != 1)
+			{
+				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcommandremove [commandname]. Command can only be removed by the person who added it.");
+			}
+        	String searchString = event.getAuthor().getName() + " ð " + args.get(0);
+        	File file = new File("C:\\Users\\Ka\\Desktop\\customcommands.txt");
+        	try {
+				List<String> lines = FileUtils.readLines(file);
+				int size = lines.size();
+				for(int i = 0; i < size; i++)
+				{
+					if(lines.get(i).contains(searchString))
+					{
+						List<String> updatedLines = lines.stream().filter(s -> !s.contains(searchString)).collect(Collectors.toList());
+						FileUtils.writeLines(file, updatedLines, false);
+						BotUtils.sendMessage(event.getChannel(), "Custom command " + args.get(0) + " has been successfully removed.");
+					}
+					else if (lines.get(i).contains(args.get(0)))
+					{
+						BotUtils.sendMessage(event.getChannel(),"Error: Only the person who added the command may remove it.");
+					}
+				}
+			}
+			catch (IOException e)
+			{
+				BotUtils.sendMessage(event.getChannel(), "Error: Could not access data. Please do not try again.");
+			}
+		});
+
         commandMap.put("choose", (event, args) ->{
             if (args.size() != 0 && args.size() != 1)
             {
@@ -527,7 +572,7 @@ public class CommandHandler  {
 				{
 					if(!(chooseString.contains("\"")))
 					{
-						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks) ");
+						BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (can take more than two options, keep options seperate using quotation marks) ");
 						return;
 					}
 				}
@@ -562,7 +607,7 @@ public class CommandHandler  {
             }
             else
             {
-                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (keep options seperate, using quotation marks, no spaces) ");
+                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -choose [option] [option] (can take more than two options, keep options seperate using quotation marks) ");
             }
         });
         commandMap.put("customcolor", (event, args) ->{
@@ -574,7 +619,6 @@ public class CommandHandler  {
 				pingable = true;
 			}
 			try{
-
 				Color color = Color.valueOf(args.get(0));
 			}
 			catch (IllegalArgumentException A)
@@ -586,7 +630,6 @@ public class CommandHandler  {
         	String rolename = args.toString();
         	rolename = rolename.substring(1, rolename.length() - 1);
         	rolename = rolename.replaceAll(",", "");
-        	//try{
         		if (event.getGuild().getRolesByName(rolename).isEmpty()) {
         			EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
         			java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
@@ -597,9 +640,6 @@ public class CommandHandler  {
         			} else {
         			BotUtils.sendMessage(event.getChannel(), "Error: Role already exists.");
         			}
-        			/*}catch (Exception E) {
-        		BotUtils.sendMessage(event.getChannel(), "Error.");
-        		}*/
 			}
 			else
 				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcolor [hexidecimalvalue] [rolename] (true if pingable)");
@@ -618,104 +658,9 @@ public class CommandHandler  {
             BotUtils.sendMessage(event.getChannel(), "Restart successful.");
         });
 
-        /*Suddenly stopped working. Oh well.
-        commandMap.put("vaynespotting", (event, args) -> {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.withColor(0, 0, 100);
-            builder.appendField("Rules:", "Here's how it works: when your Vayne does something extremely Vayne-esque (or \"Vaynes out,\") you get a certain number of points based on what happens.\n" +
-                    "The scoring works like this:\n" +
-                    "points for action your Vayne did, multiplied by...\n" +
-                    "the number of enemies they did it into, multiplied by...\n" +
-                    "what they gave up to do it, multiplied by...\n" +
-                    "what they said in chat about it afterward.\n" +
-                    "If the Vayne takes personal responsibility, it is rendered null.", true);
-            builder.appendField("Point Multipliers: ", "Flashing: 2x\n" +
-                            " Healing: +2\n " +
-                            "# Of Towers Dove: +2#\n " +
-                            "# Of Enemies Involved: +#\n" +
-                            "Blame the Top Laner: +4\n" +
-                            "Blame the Mid Laner: +3\n" +
-                            "Blame the Jungler: +2\n" +
-                            "Blame the Support: +1\n" +
-                            "`im done`: +2\n" +
-                            "`gg`: +2\n" +
-                            "`afk`: +3\n" +
-                            "`bg`: +4\n" + "`zzz` with an additional point for each additional `z`: +2+z's\n"
-                    , true);
-            File file = new File("C:\\Users\\Ka\\Desktop\\vaynespotting.txt");
-            TreeMap<Integer, String> tm= new TreeMap<Integer, String>();
-            try (Scanner sc = new Scanner(file)) {
-                while (sc.hasNextLine())
-                {
-                    String line = sc.nextLine();
-                    if (line.equals(""))
-                        line = line;
-                    else
-                    {
-                        int secondcolon = line.indexOf(':', 6);
-                        String num = line.substring(secondcolon + 1, line.length()).trim();
-                        int score = Integer.parseInt(num);
-                        tm.put(score, line);
-                    }
-                }
-                sc.close();
-            }
-            catch(FileNotFoundException e)
-            {
-                BotUtils.sendMessage(event.getChannel(), "Error: Could not access the database. Please do not try again.");
-            }
-            tm.descendingMap();
-            String list[] = new String[5];
-            for(int k = 0; k < 5; k++)
-            {
-                list[k] = (tm.lastEntry().getValue());
-                tm.remove(tm.lastKey());
-            }
-            builder.appendField("Highest Scores: ", ""+ list[0] + "\n" + list[1]+ "\n" + list[2]+"\n"+list[3]+"\n"+list[4]+"\n", true);
-            builder.withAuthorName("Vayne Spotting");
-            builder.withAuthorIcon("https://yt3.ggpht.com/-GWUINuD8nhs/AAAAAAAAAAI/AAAAAAAAAAA/ioN1m0kaErU/s900-c-k-no-mo-rj-c0xffffff/photo.jpg");
-            builder.withFooterText("IMPORTANT NOTE: We are an accepting group, and also accept trans-Vayne actions.");
-            RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
-        });
 
-        commandMap.put("vaynespottingaddscore", (event, args) -> {
-            try {
-                File outFile = new File("C:\\Users\\Botkatchi\\Desktop\\vaynespotting.txt");
-                FileWriter fWriter = new FileWriter(outFile, true);
-                PrintWriter pWriter = new PrintWriter(fWriter);
-                String arg = args.get(0);
-                try
-                {
-                    Integer.parseInt(arg);
-                }
-                catch (Exception e)
-                {
-                    BotUtils.sendMessage(event.getChannel(), "Error: Usage: -vaynespottingaddscore [#]");
-                    return;
-                }
-                pWriter.println("User: " + event.getAuthor().getName() + " | Points: " + args.get(0));
-                pWriter.close();
-                BotUtils.sendMessage(event.getChannel(), "Score successfully added to the database.");
-            }
-            catch (IOException e)
-            {
-                BotUtils.sendMessage(event.getChannel(), "Error: Could not access the database. Please do not try again.");
-            }
-        }); */
-        //Outputs a pretty Embeded help block. Lists commands, as well as some relevant information about the bot.
-        commandMap.put("help", (event, args) -> {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.appendField("Garbage Meme Commands: ", "thinksphere\ndonger \nhappyday \nSMorcerer", true);
-            builder.appendField("More Relevant Commands: ", "choose\necho\ncustomcommandadd\ncustomcommandlist\nroll\naddrole (mod/admin use)\nremoverole (mod/admin use)\nrequestrole (for self use)\nrelinquishrole (for self use) \nmyava \ntheirava \n customcolor", true);
-            builder.withAuthorName("Botkatchi");
-            builder.withAuthorIcon("http://i.imgur.com/fHSGYZg.png");
-            builder.withColor(200, 0, 0);
-            builder.withDescription("A multi-purpose Discord bot made by Ekatchi. Mostly for memes. All commands are prompted with `-`.\nFor more information about specific commands and any potential inputs, just call the command.\nTo call a custom command, use `-[customcommandname]`.");
-            builder.withFooterText("Last updated: September 11th 2018");
-            RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
-        }); /*
          //An example embed block, use for building other ones.
-         commandMap.put("exampleembed", (event, args) -> {
+         /**commandMap.put("exampleembed", (event, args) -> {
 
          EmbedBuilder builder = new EmbedBuilder();
 
@@ -795,7 +740,7 @@ public class CommandHandler  {
             commandMap.get(commandStr).runCommand(event, argsList);
         else
         {
-            File file = new File("C:\\Users\\Botkatchi\\Desktop\\customcommands.txt");
+            File file = new File("C:\\Users\\Ka\\Desktop\\customcommands.txt");
             try(Scanner sc = new Scanner(file))
             {
                 while(sc.hasNextLine())
