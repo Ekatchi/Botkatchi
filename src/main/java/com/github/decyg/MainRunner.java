@@ -43,6 +43,7 @@ public class MainRunner {
 				}
 				catch (DiscordException e)
 				{
+					IDiscordClient thisclient = BotUtils.getBuiltDiscordClient(args[0]);
 					thisclient.logout();
 					thisclient.login();
 					System.out.println("-------------restarted-------------");
