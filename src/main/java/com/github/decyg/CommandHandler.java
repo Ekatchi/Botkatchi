@@ -36,6 +36,7 @@ public class CommandHandler  {
 
     //A bunch of things used for meme commands.
     static Random random = new Random();
+    static String[] thotarray = {"https://i.imgur.com/GuMOkQK.png", "https://cdn.discordapp.com/attachments/471509973185200148/492533203358187547/Thot_hand_signs.gif", "https://i.imgur.com/OqymldO.png", "https://i.imgur.com/l8rkE9a.png", "https://i.imgur.com/cb7CemO.png", "https://gfycat.com/GrossUnhappyCleanerwrasse", "https://i.imgur.com/UELsn2Q.png"};
     static String[] memokou = {"http://i.imgur.com/XfDiX5s.jpg", "http://i.imgur.com/uJPBD1W.jpg", "http://i.imgur.com/Zoxoigd.jpg", "http://i.imgur.com/j6pyLsD.jpg", "http://i.imgur.com/1lL6fmo.jpg"};
     static String[] response = {"Me too.", "Same.", "Me too, dude.", "Me too thanks.", "True."};
     static String[] omemechan = {"http://i.imgur.com/kPnMUhG.png", "http://i.imgur.com/2dlpDHi.jpg", "http://i.imgur.com/ctXmRae.png"};
@@ -365,6 +366,9 @@ public class CommandHandler  {
             BotUtils.sendMessage(event.getChannel(), memokou[random.nextInt(5)]);
         });*/
 
+        commandMap.put("BEGONETHOT", (event, args) -> {
+        	BotUtils.sendMessage(event.getChannel(), thotarray[random.nextInt(7)]);
+		});
         //Randomly slaps together 1-3 Hearthstone terms and a class. Doesn't give duplicates, and has "Jade" and "Handbuff" for their respective classes.
         commandMap.put("SMorcerer", (event, args) -> {
             String temphero = "";
