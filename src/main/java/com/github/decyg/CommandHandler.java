@@ -279,7 +279,7 @@ public class CommandHandler  {
             try{event.getMessage().getMentions().get(0);}
             catch (Exception e)
             {
-                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -theirava [@username]");
+                BotUtils.sendMessage(event.getChannel(), "Error: Usage: -theirava @username");
                 return;
             }
             IUser user = event.getMessage().getMentions().get(0);
@@ -325,6 +325,7 @@ public class CommandHandler  {
             int dlocation = input.indexOf('d');
             int dicenum = Integer.parseInt(input.substring(0, dlocation));
             int dicenum2 = Integer.parseInt(input.substring(dlocation+1, input.length()));
+            String dicearray = "";
             if(dicenum > 100 || dicenum2 > 100)
 			{
 				BotUtils.sendMessage(event.getChannel(), "Please use reasonable numbers thank");
@@ -342,8 +343,9 @@ public class CommandHandler  {
                 while(diceroll == 0)
                     diceroll = random.nextInt(dicenum2+1);
                 total += diceroll;
+                dicearray = dicearray.concat("`"+ diceroll + "` ");
             }
-            BotUtils.sendMessage(event.getChannel(), "You rolled `"+dicenum+"`  `"+dicenum2+"` sided dice for a total of "+ "`" + total + "`.");
+            BotUtils.sendMessage(event.getChannel(), "You rolled `"+dicenum+"`  `"+dicenum2+"` sided dice for a total of "+ "`" + total + "`.\n Specific dice rolled: "+ dicearray);
 
 
         });
@@ -640,21 +642,27 @@ public class CommandHandler  {
 			{
 				BotUtils.sendMessage(event.getChannel(), "Error: provided color value was not hexidecimal");
 			}
-			Color color = Color.valueOf(args.get(0));
-			args.remove(0);
-        	String rolename = args.toString();
-        	rolename = rolename.substring(1, rolename.length() - 1);
-        	rolename = rolename.replaceAll(",", "");
-        		if (event.getGuild().getRolesByName(rolename).isEmpty()) {
-        			EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
-        			java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
-        			event.getGuild().createRole().edit(awtColor, false, rolename, perms, pingable);
-        			BotUtils.sendMessage(event.getChannel(), "Role " + rolename + " successfully made.");
-        			event.getAuthor().addRole(event.getGuild().getRolesByName(rolename).get(0));
-        			BotUtils.sendMessage(event.getChannel(), "You have successfuly given the " + rolename + " role.");
-        			} else {
-        			BotUtils.sendMessage(event.getChannel(), "Error: Role already exists.");
-        			}
+			try {
+				Color color = Color.valueOf(args.get(0));
+				args.remove(0);
+				String rolename = args.toString();
+				rolename = rolename.substring(1, rolename.length() - 1);
+				rolename = rolename.replaceAll(",", "");
+				if (event.getGuild().getRolesByName(rolename).isEmpty()) {
+					EnumSet<Permissions> perms = event.getGuild().getRolesByName("@everyone").get(0).getPermissions();
+					java.awt.Color awtColor = new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
+					event.getGuild().createRole().edit(awtColor, false, rolename, perms, pingable);
+					BotUtils.sendMessage(event.getChannel(), "Role " + rolename + " successfully made.");
+					event.getAuthor().addRole(event.getGuild().getRolesByName(rolename).get(0));
+					BotUtils.sendMessage(event.getChannel(), "You have successfuly given the " + rolename + " role.");
+				} else {
+					BotUtils.sendMessage(event.getChannel(), "Error: Role already exists.");
+				}
+			}
+			catch (IllegalArgumentException A)
+			{
+				BotUtils.sendMessage(event.getChannel(), "Error: role name must be between 1 and 32 characters.");
+			}
 			}
 			else
 				BotUtils.sendMessage(event.getChannel(), "Error: Usage: -customcolor [hexidecimalvalue] [rolename] (true if pingable)");
