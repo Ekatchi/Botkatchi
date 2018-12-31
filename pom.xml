@@ -42,7 +42,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
-
+	
 	<dependencies>
 
 		<dependency>
@@ -304,6 +304,11 @@
 			<id>jcenter</id>
 			<url>http://jcenter.bintray.com/</url>
 		</repository>
+		<repository>
+			<id>maven2</id>
+  			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+			
 	</repositories>
 </project>
 
